@@ -17,6 +17,10 @@ class TempFileManager:
             file_path = os.path.join(self.temp_dir, file.name)
             with open(file_path, 'wb') as f:
                 f.write(file.content)
+
+        # Set ownership of the temporary directory
+        os.chown(self.temp_dir, 1001, 0)  # Assuming 1001 is the UID of the 'student' user
+
         return self
 
     def __exit__(self, exc_type: Optional[Union[Type[BaseException], Tuple[Type[BaseException], ...]]],

@@ -15,9 +15,11 @@ TESTS_PATH = "/home/student/tests/"
 
 async def run(request: web.Request) -> web.Response:
     body = await request.json()
+
     files = [
         SimpleNamespace(name=f["name"], content=f["content"].encode()) for f in body["files"]
     ]
+
     timeout = False
     stdout = b""
     stderr = b""
@@ -29,15 +31,16 @@ async def run(request: web.Request) -> web.Response:
             try:
                 proc = subprocess.run(
                     (
-                        f"chown -R student {manager.directory} "
+                        f"chown -R student {manager.temp_dir} "
                         f"&& chown -R student /tmp/ "
                         f"&& chown -R student /home/student/ "
-                        f"&& sudo -u student sh -c 'cd {manager.directory} && {body['command']}' "
+                        f"&& sudo -u student sh -c 'cd \"{manager.temp_dir}\" && {body['command']}'"
                     ),
                     capture_output=True,
                     timeout=TIMEOUT,
                     shell=True,
                 )
+
                 stdout = proc.stdout
                 stderr = proc.stderr
                 return_code = proc.returncode
@@ -56,8 +59,21 @@ async def run(request: web.Request) -> web.Response:
     return web.json_response(result)
 
 
+async def get_available_programming_languages() -> web.Response:
+    result = {
+        "languages": [
+            "Go 1.19",
+            "Python 3.11",
+            "Java"
+        ]
+    }
+
+    return web.json_response(result)
+
+
 def setup_routes(http: web.Application) -> None:
-    http.router.add_post("/run/", run)
+    http.router.add_post("/run", run)
+    http.router.add_get("/get_available_langs", get_available_programming_languages)
 
 
 app = web.Application()
