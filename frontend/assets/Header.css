@@ -1,0 +1,48 @@
+.header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border-bottom: 1px #E8EDF5 solid;
+}
+
+.header__image{
+    margin: 10px 40px;
+}
+
+.header__buttons{
+    display: flex;
+    flex-direction: row;
+    margin: 10px 40px;
+}
+
+.header__buttons_history{
+    background: none;
+    border: none;
+    margin: 0 30px 0 0;
+    padding: 0;
+    width: 150px;
+    font-weight: normal;
+    font-size: 17px;
+    border-radius: 10px;
+    color: #0D141C;
+}
+.header__buttons_history:hover{
+    background-color: rgba(0,0,0,0.05);
+    cursor: pointer;
+}
+
+.header__buttons_profile{
+    background: none;
+    border: none;
+    margin: 0;
+    padding: 0;
+    border-radius: 10px;
+}
+
+.header__buttons_profile:hover{
+    cursor: pointer;
+}
+
+.header__buttons_profile_img{
+    margin: 2px 0 0;
+}

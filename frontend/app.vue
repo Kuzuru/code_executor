@@ -1,6 +1,9 @@
 <template>
   <div>
+    <MainPage/>
   </div>
 </template>
+
 <script setup lang="ts">
 </script>
+
