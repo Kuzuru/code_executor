@@ -1,6 +1,7 @@
 import asyncio
 import logging
 import os
+import resource
 import subprocess
 from types import SimpleNamespace
 
@@ -25,10 +26,14 @@ async def run(request: web.Request) -> web.Response:
     stderr = b""
     return_code = 1
     oom_killed = False
+    duration = 0
 
     async with run_lock:
         with TempFileManager(directory=TESTS_PATH, files=files) as manager:
             try:
+                # Recording process duration
+                usage_start = resource.getrusage(resource.RUSAGE_CHILDREN)
+
                 proc = subprocess.run(
                     (
                         f"chown -R student {manager.temp_dir} "
@@ -40,6 +45,11 @@ async def run(request: web.Request) -> web.Response:
                     timeout=TIMEOUT,
                     shell=True,
                 )
+
+                usage_end = resource.getrusage(resource.RUSAGE_CHILDREN)
+
+                # Cast seconds to milliseconds
+                duration = (usage_end.ru_utime - usage_start.ru_utime) * 1000
 
                 stdout = proc.stdout
                 stderr = proc.stderr
@@ -53,8 +63,10 @@ async def run(request: web.Request) -> web.Response:
         "stderr": stderr.decode(),
         "oom_killed": oom_killed,
         "timeout": timeout,
-        "duration": 0,
+        "duration": round(duration, 2),
     }
+
+    # TODO: Запись в таблицу истории в MongoDB
 
     return web.json_response(result)
 
