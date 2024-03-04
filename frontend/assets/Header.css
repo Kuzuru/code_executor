@@ -21,7 +21,8 @@
     margin: 0 30px 0 0;
     padding: 0;
     width: 150px;
-    font-weight: normal;
+    font-family: Manrope, serif;
+    font-weight: 500;
     font-size: 17px;
     border-radius: 10px;
     color: #0D141C;

@@ -1,5 +1,6 @@
 <template>
   <div>
+    <Header/>
     <MainPage/>
   </div>
 </template>
