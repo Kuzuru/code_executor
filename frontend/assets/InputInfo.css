@@ -37,4 +37,8 @@
 .info__item_text{
     color: #4A789C;
     margin: 0;
+    font-family: Manrope;
+    font-weight: 500;
+    font-size: 15px;
+
 }
