@@ -12,7 +12,31 @@ services:
       - backend
     user: "prod"
     networks:
-      - mynet
+      - frontend
+
+  mongo:
+    image: mongo
+    container_name: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USR}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PWD}
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - dbnet
+
+  dbworker:
+    build:
+      context: ./dbworker
+      dockerfile: Dockerfile
+    ports:
+      - "8080:3000"
+    networks:
+      - dbnet
+      - backend
 
   backend:
     build:
@@ -24,8 +48,14 @@ services:
       - ./backend:/agent
     command: bash -c "python3 /agent/launch.py"
     networks:
-      - mynet
+      - frontend
+      - backend
+
+volumes:
+  mongo-data:
 
 networks:
-  mynet:
+  dbnet:
+  backend:
+  frontend:
     driver: bridge
