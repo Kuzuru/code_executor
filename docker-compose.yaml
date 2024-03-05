@@ -33,7 +33,7 @@ services:
       context: ./dbworker
       dockerfile: Dockerfile
     ports:
-      - "8080:3000"
+      - "8080:8080"
     networks:
       - dbnet
       - backend
@@ -56,6 +56,8 @@ volumes:
 
 networks:
   dbnet:
+    driver: bridge
   backend:
+    driver: bridge
   frontend:
     driver: bridge
