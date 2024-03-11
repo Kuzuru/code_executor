@@ -5,13 +5,20 @@ import resource
 import subprocess
 from types import SimpleNamespace
 
-from aiohttp import web
+from aiohttp import web, ClientSession
 
 from tempfile_helper import TempFileManager
 
 AGENT_PORT = int(os.getenv("PORT", "3000"))
 TIMEOUT = int(os.getenv("TIMEOUT", "10"))
 TESTS_PATH = "/home/student/tests/"
+
+
+async def health_check_handler(request: web.Request) -> web.Response:
+    async with ClientSession() as session:
+        async with session.post('http://localhost:8080/healthcheck') as response:
+            response_json = await response.json()
+            return web.json_response({"res": response_json})
 
 
 async def run(request: web.Request) -> web.Response:
@@ -67,6 +74,8 @@ async def run(request: web.Request) -> web.Response:
     }
 
     # TODO: Запись в таблицу истории в MongoDB
+    health_result = await health_check()
+    logging.debug(f'Health check result: {health_result}')
 
     return web.json_response(result)
 
@@ -86,6 +95,7 @@ async def get_available_programming_languages() -> web.Response:
 def setup_routes(http: web.Application) -> None:
     http.router.add_post("/run", run)
     http.router.add_get("/get_available_langs", get_available_programming_languages)
+    http.router.add_get("/healthcheck", health_check_handler)
 
 
 app = web.Application()
