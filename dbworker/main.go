@@ -36,7 +36,7 @@ func buildAndListen() {
 	// Building all routes and middlewares together
 	buildHandlers(app)
 
-	address := ":" + os.Getenv("8080")
+	address := ":" + os.Getenv("DBWORKER_PORT")
 
 	go func() {
 		if err := app.Listen(address); err == nil {
