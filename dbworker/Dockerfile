@@ -30,7 +30,7 @@ WORKDIR /app
 
 COPY --from=builder /docker-dbworker /app/docker-dbworker
 
-EXPOSE 8080
+EXPOSE 3031
 
 # Run
 CMD ["./docker-dbworker"]

@@ -1,5 +1,6 @@
 services:
   frontend:
+    container_name: "frontend"
     build:
       context: ./frontend
       dockerfile: Dockerfile
@@ -12,8 +13,6 @@ services:
       backend:
         condition: "service_started"
     user: "prod"
-    networks:
-      - frontend
 
   mongo:
     image: mongo
@@ -26,43 +25,31 @@ services:
       - "27017:27017"
     volumes:
       - mongo-data:/data/db
-    networks:
-      - dbnet
 
   dbworker:
+    container_name: "dbworker"
     build:
       context: ./dbworker
       dockerfile: Dockerfile
     env_file: .env
+    tty: true
     ports:
-      - "8080:8080"
+      - "3031:3031"
     depends_on:
       - mongo
-    networks:
-      - dbnet
-      - backend
 
   backend:
+    container_name: "backend"
     build:
       context: ./backend
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - "3030:3030"
     depends_on:
-      dbworker:
-        condition: "service_started"
+      - dbworker
     volumes:
       - ./backend:/agent
     command: bash -c "python3 /agent/launch.py"
-    networks:
-      - frontend
-      - backend
 
 volumes:
   mongo-data:
-
-networks:
-  dbnet:
-  backend:
-  frontend:
-    driver: bridge
