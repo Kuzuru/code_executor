@@ -1,20 +1,29 @@
 package main
 
 import (
-	"log"
+	"os"
+	"os/signal"
+	"syscall"
 
-	"github.com/gofiber/fiber/v2"
+	"dbworker/internal/server"
+
+	"github.com/gofiber/fiber/v2/log"
+	"github.com/joho/godotenv"
 )
 
 func main() {
-	app := fiber.New()
-
-	app.Get("/healthcheck", func(c *fiber.Ctx) error {
-		return c.SendStatus(200)
-	})
-
-	err := app.Listen(":8080")
+	err := godotenv.Load()
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal("Error loading .env file", err)
 	}
+
+	log.Info(".env file loaded successfully")
+
+	server.Run()
+
+	// Waiting for exit signal from OS
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, os.Interrupt, syscall.SIGTERM, syscall.SIGHUP, syscall.SIGQUIT)
+
+	<-quit
 }
