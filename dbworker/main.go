@@ -11,17 +11,9 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/log"
 	"github.com/gofiber/fiber/v2/middleware/cors"
-	"github.com/joho/godotenv"
 )
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file", err)
-	}
-
-	log.Info(".env file loaded successfully")
-
 	buildAndListen()
 
 	// Waiting for exit signal from OS
@@ -32,8 +24,6 @@ func main() {
 }
 
 func buildAndListen() {
-	log.Info("Starting cmd...")
-
 	app := fiber.New(fiber.Config{
 		Prefork:       true,
 		CaseSensitive: true,
@@ -46,7 +36,7 @@ func buildAndListen() {
 	// Building all routes and middlewares together
 	buildHandlers(app)
 
-	address := ":" + os.Getenv("APP_PORT_HTTP")
+	address := ":" + os.Getenv("8080")
 
 	go func() {
 		if err := app.Listen(address); err == nil {

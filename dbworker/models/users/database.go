@@ -19,7 +19,7 @@ const (
 
 var ErrUserNotFound = errors.New("user not found")
 
-func CreateUser(user User) error {
+func CreateUser(user *User) error {
 	collection := database.Client.Database(os.Getenv("MONGO_DB_NAME")).Collection(CollectionName)
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 

@@ -33,4 +33,4 @@ COPY --from=builder /docker-dbworker /app/docker-dbworker
 EXPOSE 8080
 
 # Run
-CMD ["./app/docker-dbworker"]
+CMD ["./docker-dbworker"]

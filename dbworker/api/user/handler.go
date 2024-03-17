@@ -1,8 +1,6 @@
 package user
 
 import (
-	"context"
-
 	models "dbworker/models/users"
 
 	"github.com/gofiber/fiber/v2"
@@ -11,8 +9,7 @@ import (
 // resource is the structure responsible for representing
 // the HTTP request unit for a given package
 type resource struct {
-	app     fiber.Router
-	storage models.Storage
+	app fiber.Router
 }
 
 func RegisterHandler(app *fiber.App) {
@@ -44,7 +41,7 @@ func (res *resource) register(c *fiber.Ctx) error {
 	userModel.Name = req.Name
 	userModel.PasswordHash = req.Password // TODO: BCRYPT [!!!]
 
-	err := res.storage.CreateUser(context.TODO(), &userModel)
+	err := models.CreateUser(&userModel)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": err.Error(),
