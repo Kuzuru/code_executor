@@ -6,7 +6,7 @@ import (
 
 type History struct {
 	ID        int64      `json:"id" bson:"_id"`
-	SourceId  int64      `json:"source_id" bson:"source_id"`
+	SourceId  string     `json:"source_id" bson:"source_id"`
 	ExitCode  int64      `json:"exit_code" bson:"exit_code"`
 	Stdout    string     `json:"stdout" bson:"stdout"`
 	Stderr    string     `json:"stderr" bson:"stderr"`
