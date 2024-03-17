@@ -41,7 +41,14 @@ func (res *resource) register(c *fiber.Ctx) error {
 	userModel.Name = req.Name
 	userModel.PasswordHash = req.Password // TODO: BCRYPT [!!!]
 
-	err := models.CreateUser(&userModel)
+	_, err := models.FindUserByName(req.Name)
+	if err == nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Пользователь с таким именем уже существует",
+		})
+	}
+
+	err = models.CreateUser(&userModel)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": err.Error(),
