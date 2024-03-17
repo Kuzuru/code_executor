@@ -1,0 +1,1 @@
+docker-compose down -v && docker rmi -f code_executor-dbworker code_executor-backend code_executor-frontend && cls && docker-compose up
