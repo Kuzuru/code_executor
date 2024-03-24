@@ -2,7 +2,7 @@ package user
 
 import (
 	models "dbworker/models/users"
-
+	"dbworker/utils"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -36,17 +36,24 @@ func (res *resource) register(c *fiber.Ctx) error {
 		})
 	}
 
-	var userModel models.User
-
-	userModel.Name = req.Name
-	userModel.PasswordHash = req.Password // TODO: BCRYPT [!!!]
-
 	_, err := models.FindUserByName(req.Name)
 	if err == nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "Пользователь с таким именем уже существует",
 		})
 	}
+
+	hashedPassword, err := utils.GenerateHashFromPassword(req.Password, utils.GetArgonParams())
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": err,
+		})
+	}
+
+	var userModel models.User
+
+	userModel.Name = req.Name
+	userModel.PasswordHash = hashedPassword
 
 	err = models.CreateUser(&userModel)
 	if err != nil {

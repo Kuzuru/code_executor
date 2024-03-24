@@ -19,7 +19,10 @@ const (
 	CollectionName = "users"
 )
 
-var ErrUserNotFound = errors.New("user not found")
+var (
+	ErrUserNotFound      = errors.New("пользователь не найден")
+	ErrUserAlreadyExists = errors.New("пользователь с таким именем уже существует")
+)
 
 func CreateUser(user *User) error {
 	collection := database.Client.Database(os.Getenv("MONGO_DB_NAME")).Collection(CollectionName)
