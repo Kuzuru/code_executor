@@ -30,7 +30,9 @@ WORKDIR /app
 
 COPY --from=builder /docker-dbworker /app/docker-dbworker
 
-EXPOSE 3031
+RUN apk add dumb-init
+
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
 
 # Run
-CMD ["./docker-dbworker"]
+CMD ./docker-dbworker

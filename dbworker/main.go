@@ -36,7 +36,7 @@ func buildAndListen() {
 	// Building all routes and middlewares together
 	buildHandlers(app)
 
-	address := ":" + os.Getenv("DBWORKER_PORT")
+	address := "0.0.0.0:" + os.Getenv("DBWORKER_PORT")
 
 	go func() {
 		if err := app.Listen(address); err == nil {
@@ -45,7 +45,7 @@ func buildAndListen() {
 	}()
 
 	if !fiber.IsChild() {
-		log.Info("Server is listening", address)
+		log.Info("Server is listening on: ", address)
 	}
 }
 

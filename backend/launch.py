@@ -104,7 +104,7 @@ async def register_new_user(request: web.Request) -> web.Response:
         return web.json_response(result, status=400)
 
     async with aiohttp.ClientSession() as session:
-        async with session.post('http://dbworker:3031/user/register', json=body) as response:
+        async with session.post('http://localhost:8080/user/register', json=body) as response:
             response_json = await response.json()
             if response.status != 200:
                 result = {

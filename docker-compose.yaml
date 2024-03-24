@@ -34,7 +34,7 @@ services:
     env_file: .env
     tty: true
     ports:
-      - "3031:3031"
+      - "8080:8080"
     depends_on:
       - mongo
 
