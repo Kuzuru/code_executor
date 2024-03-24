@@ -1,8 +1,9 @@
-package middleware
+package jwtware
 
 import (
 	"errors"
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -16,7 +17,7 @@ type Config struct {
 	// Function to run when there is error decoding jwt
 	Unauthorized fiber.Handler
 
-	// Function to decode our jwt token
+	// Function to decode our jwt jwtware
 	Decode func(c *fiber.Ctx) (*jwt.MapClaims, error)
 
 	// JWT secret
@@ -31,7 +32,7 @@ var ConfigDefault = Config{
 	Filter:       nil,
 	Decode:       nil,
 	Unauthorized: nil,
-	Secret:       "a_very_weak_secret", // TODO: Replace with .env value
+	Secret:       os.Getenv("JWT_SECRET"),
 	Expiry:       60,
 }
 
@@ -71,7 +72,7 @@ func configDefault(config ...Config) Config {
 				return nil, errors.New("authorization header is required")
 			}
 
-			// we parse our jwt token and check for validity against our secret
+			// we parse our jwt jwtware and check for validity against our secret
 			token, err := jwt.Parse(
 				authHeader[7:],
 				func(token *jwt.Token) (interface{}, error) {
@@ -84,13 +85,13 @@ func configDefault(config ...Config) Config {
 			)
 
 			if err != nil {
-				return nil, errors.New("error parsing token")
+				return nil, errors.New("error parsing jwtware")
 			}
 
 			claims, ok := token.Claims.(jwt.MapClaims)
 
 			if !(ok && token.Valid) {
-				return nil, errors.New("Invalid token")
+				return nil, errors.New("invalid jwtware")
 			}
 
 			if expiresAt, ok := claims["exp"]; ok && int64(expiresAt.(float64)) < time.Now().UTC().Unix() {
@@ -111,23 +112,22 @@ func configDefault(config ...Config) Config {
 	return cfg
 }
 
-// Encode is a function to generate a jwt token
-func Encode(claims *jwt.MapClaims, secret string, expiryAfter int64) (string, error) {
+// Encode is a function to generate a jwt jwtware
+func Encode(claims *jwt.MapClaims, expiryAfter int64) (string, error) {
 	// setting default expiryAfter
 	if expiryAfter == 0 {
 		expiryAfter = ConfigDefault.Expiry
 	}
 
-	// or you can use time.Now().Add(time.Second * time.Duration(expiryAfter)).UTC().Unix()
 	(*claims)["exp"] = time.Now().UTC().Unix() + expiryAfter
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	// our signed jwt token string
+	// our signed jwt jwtware string
 	signedToken, err := token.SignedString([]byte(ConfigDefault.Secret))
 
 	if err != nil {
-		return "", errors.New("error creating a token")
+		return "", errors.New("error creating a jwtware")
 	}
 
 	return signedToken, nil
@@ -141,10 +141,8 @@ func New(config Config) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		// Don't execute middleware if Filter returns true
 		if cfg.Filter != nil && cfg.Filter(c) {
-			fmt.Println("Midddle was skipped")
 			return c.Next()
 		}
-		fmt.Println("Midddle was run")
 
 		claims, err := cfg.Decode(c)
 
