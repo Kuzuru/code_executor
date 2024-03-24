@@ -6,7 +6,7 @@ import (
 	"syscall"
 
 	"dbworker/api/user"
-
+	"dbworker/middleware/jwtware"
 	"github.com/bytedance/sonic"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/log"
@@ -50,5 +50,19 @@ func buildAndListen() {
 }
 
 func buildHandlers(app *fiber.App) {
-	user.RegisterHandler(app)
+	// Unprotected handlers
+	user.RegisterHandlers(app)
+
+	// Protected with JWT jwtware handlers goes after this line
+	app.Use(jwtware.New(jwtware.Config{}))
+
+	app.Get("/protected", func(c *fiber.Ctx) error {
+		claimData := c.Locals("jwtClaims")
+
+		if claimData == nil {
+			return c.SendString("JWT was bypassed")
+		}
+
+		return c.JSON(claimData)
+	})
 }

@@ -12,8 +12,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-var ()
-
 // resource is the structure responsible for representing
 // the HTTP request unit for a given package
 type resource struct {
