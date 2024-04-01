@@ -1,0 +1,31 @@
+.profile{
+    margin: 40px auto 100px 100px;
+}
+
+.profile__title{
+    color: #0D141C;
+    font-family: Manrope, serif;
+    font-weight: 800;
+    font-size: 28px;
+    margin: 0 0 20px;
+}
+
+.profile__subtitle{
+    color: #4A789C;
+    font-family: Manrope, serif;
+    font-weight: 500;
+    font-size: 18px;
+    margin: 0 0 10px;
+}
+
+.profile__data{
+    color: #0D141C;
+    font-family: Manrope, serif;
+    font-weight: 500;
+    font-size: 20px;
+    margin: 0 0 20px;
+}
+
+.profile__personal{
+    margin-bottom: 60px;
+}
