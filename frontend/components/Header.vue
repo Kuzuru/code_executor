@@ -1,11 +1,11 @@
 <template>
   <section class="header">
-    <img class="header__image" src="../assets/images/Logo.svg" alt="logo">
+    <nuxt-link to="/" class="header__button_home"><img class="header__logo" src="../assets/images/Logo.svg" alt="logo"></nuxt-link>
     <div class="header__buttons">
-      <button class="header__buttons_history">История</button>
-      <button class="header__buttons_profile">
+      <nuxt-link class="header__buttons_history" to="/history">История</nuxt-link>
+      <nuxt-link class="header__buttons_profile" to="/profile">
         <img class="header__buttons_profile_img" src="../assets/images/Profile.svg" alt="profile">
-      </button>
+      </nuxt-link>
     </div>
   </section>
 </template>
