@@ -7,8 +7,9 @@
     <OutputConsole/>
   </section>
 </template>
-<script setup lang="ts">
-import InputInfo from "~/components/InputInfo.vue";
+
+<script lang="ts">
+
 </script>
 
 <style>
