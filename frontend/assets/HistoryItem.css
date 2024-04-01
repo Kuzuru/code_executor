@@ -1,0 +1,39 @@
+.history-item{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 600px;
+    border-radius: 10px;
+    height: 40px;
+}
+
+.history-item:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    color: #1C91F2;
+}
+
+.history-item__date{
+    font-family: Manrope, serif;
+    font-weight: 500;
+    font-size: 17px;
+    margin: 0 20px 0;
+}
+.history-item__time{
+    font-family: Manrope, serif;
+    font-weight: 500;
+    font-size: 17px;
+    margin: 0 20px 0;
+}
+.history-item__action{
+    font-family: Manrope, serif;
+    font-weight: 600;
+    font-size: 17px;
+    margin: 0 5px 0 20px;
+}
+.history-item__file-name{
+    font-family: Manrope, serif;
+    font-weight: 800;
+    font-size: 17px;
+    margin: 0 20px 0 0;
+}
