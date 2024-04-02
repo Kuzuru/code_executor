@@ -1,6 +1,9 @@
 package main
 
 import (
+	"dbworker/api/history"
+	"dbworker/api/langs"
+	"dbworker/api/source"
 	"os"
 	"os/signal"
 	"syscall"
@@ -52,9 +55,13 @@ func buildAndListen() {
 func buildHandlers(app *fiber.App) {
 	// Unprotected handlers
 	user.RegisterHandlers(app)
+	langs.RegisterHandlers(app)
 
 	// Protected with JWT jwtware handlers goes after this line
 	app.Use(jwtware.New(jwtware.Config{}))
+
+	source.RegisterProtectedHandlers(app)
+	history.RegisterProtectedHandlers(app)
 
 	app.Get("/protected", func(c *fiber.Ctx) error {
 		claimData := c.Locals("jwtClaims")

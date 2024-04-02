@@ -19,7 +19,8 @@ class TempFileManager:
                 f.write(file.content)
 
         # Set ownership of the temporary directory
-        os.chown(self.temp_dir, 1001, 0)  # Assuming 1001 is the UID of the 'student' user
+        # Assuming 1001 is the UID of the "student" user
+        os.chown(self.temp_dir, 1001, 0)
 
         return self
 
