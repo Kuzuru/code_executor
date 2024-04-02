@@ -1,0 +1,48 @@
+.input{
+    margin: 40px 100px 50px 40px;
+    min-width: 500px;
+    max-width: 1200px;
+    flex: 1;
+}
+.input__titles{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height: 56px;
+}
+.input__titles_title{
+    font-family: Manrope, serif;
+    font-weight: 500;
+    font-size: 20px;
+    color: #0D141C;
+}
+
+.input__titles_file{
+    font-family: Manrope, serif;
+    font-weight: 500;
+    font-size: 20px;
+    color: #4A789C;
+
+}
+
+.input__code{
+    resize: none;
+    height: 500px;
+    font-family: "Fira Code Retina", serif;
+    font-size: 20px;
+    border: 1px rgba(0, 0, 0, 0.12) solid;
+    border-radius: 10px;
+    outline: none;
+    width: 100%;
+}
+
+.input__code::-webkit-scrollbar-thumb{
+    background-color: rgba(0, 0, 0, 0.15);
+    border-radius: 10px;
+    margin: 10px;
+}
+
+.input__code::-webkit-scrollbar{
+    background: none;
+    width: 5px;
+}
