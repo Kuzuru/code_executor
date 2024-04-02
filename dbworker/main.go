@@ -1,6 +1,7 @@
 package main
 
 import (
+	"dbworker/api/history"
 	"dbworker/api/source"
 	"os"
 	"os/signal"
@@ -58,6 +59,8 @@ func buildHandlers(app *fiber.App) {
 	app.Use(jwtware.New(jwtware.Config{}))
 
 	source.RegisterProtectedHandlers(app)
+	history.RegisterProtectedHandlers(app)
+
 	app.Get("/protected", func(c *fiber.Ctx) error {
 		claimData := c.Locals("jwtClaims")
 

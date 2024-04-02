@@ -8,7 +8,9 @@ import (
 	"time"
 
 	"dbworker/database"
+	sourceModel "dbworker/models/sources"
 
+	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -26,12 +28,29 @@ func CreateHistoryPoint(history History) error {
 
 	defer cancel()
 
-	_, err := collection.InsertOne(ctx, history)
+	_, err := uuid.Parse(history.SourceId)
+	if err != nil {
+		return err
+	}
+
+	_, err = sourceModel.FindSourceByID(history.SourceId)
+	if err != nil {
+		return errors.New("исходника не существует")
+	}
+
+	id := uuid.New()
+	history.ID = id.String()
+
+	createdAt := time.Now()
+
+	history.CreatedAt = &createdAt
+
+	_, err = collection.InsertOne(ctx, history)
 
 	return err
 }
 
-func FindHistoryBySourceID(sourceID int64) (History, error) {
+func FindHistoryBySourceID(sourceID string) (History, error) {
 	collection := database.Client.Database(os.Getenv("MONGO_DB_NAME")).Collection(CollectionName)
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 
@@ -51,7 +70,7 @@ func FindHistoryBySourceID(sourceID int64) (History, error) {
 	return historyPoint, nil
 }
 
-func GetUserHistoryPoints(sourceIDs []int64, limit int64, offset int64) ([]History, error) {
+func GetUserHistoryPoints(sourceID string, limit int64, offset int64) ([]History, error) {
 	collection := database.Client.Database(os.Getenv("MONGO_DB_NAME")).Collection(CollectionName)
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 
@@ -62,8 +81,8 @@ func GetUserHistoryPoints(sourceIDs []int64, limit int64, offset int64) ([]Histo
 	findOptions.SetSkip(offset)
 
 	filter := bson.M{
-		"_id": bson.M{
-			"$in": sourceIDs,
+		"source_id": bson.M{
+			"$eq": sourceID,
 		},
 	}
 
@@ -78,6 +97,20 @@ func GetUserHistoryPoints(sourceIDs []int64, limit int64, offset int64) ([]Histo
 	}(cur, ctx)
 
 	if err != nil {
+		return history, err
+	}
+
+	for cur.Next(ctx) {
+		var historySingle History
+		err := cur.Decode(&historySingle)
+		if err != nil {
+			return history, err
+		}
+
+		history = append(history, historySingle)
+	}
+
+	if err := cur.Err(); err != nil {
 		return history, err
 	}
 

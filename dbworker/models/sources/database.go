@@ -50,6 +50,26 @@ func CreateSource(source SourceDTO) error {
 	return err
 }
 
+func FindSourceByID(id string) (Source, error) {
+	collection := database.Client.Database(os.Getenv("MONGO_DB_NAME")).Collection(CollectionName)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+
+	defer cancel()
+
+	var source Source
+
+	err := collection.FindOne(ctx, bson.M{"_id": id}).Decode(&source)
+	if err != nil {
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			return source, ErrSourceNotFound
+		}
+
+		return source, err
+	}
+
+	return source, nil
+}
+
 func FindSourceByUserID(userId string) (Source, error) {
 	collection := database.Client.Database(os.Getenv("MONGO_DB_NAME")).Collection(CollectionName)
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
