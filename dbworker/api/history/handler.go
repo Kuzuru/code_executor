@@ -24,7 +24,6 @@ func getGroupAndResources(app *fiber.App) (resource, fiber.Router) {
 func RegisterProtectedHandlers(app *fiber.App) {
 	res, group := getGroupAndResources(app)
 
-	group.Post("/new", res.createNewHistoryPoint)
 	group.Post("/get", res.getSourceHistoryPoints)
 }
 
@@ -54,24 +53,4 @@ func (res *resource) getSourceHistoryPoints(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{
 		"history": history,
 	})
-}
-
-func (res *resource) createNewHistoryPoint(c *fiber.Ctx) error {
-	var req historyModel.History
-
-	if err := c.BodyParser(&req); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": err.Error(),
-		})
-	}
-
-	err := historyModel.CreateHistoryPoint(req)
-	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error":   "Не удалось создать запись истории",
-			"message": err.Error(),
-		})
-	}
-
-	return c.SendStatus(200)
 }

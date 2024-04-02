@@ -40,6 +40,9 @@ func CreateSource(source SourceDTO) error {
 	preparedSource.ID = id.String()
 	preparedSource.UserId = source.UserId
 
+	preparedSource.FileName = source.FileName
+	preparedSource.Data = source.Data
+
 	_, err := models.FindUserByID(preparedSource.UserId)
 	if err != nil {
 		return errors.New("пользователя не существует")
@@ -137,21 +140,82 @@ func GetUserSources(userId string, limit int64, offset int64) ([]Source, error) 
 	return sources, nil
 }
 
-func (source *Source) UpdateSourceUpdatetAt(updatedAt time.Time) error {
+func (source *Source) UpdateSourceData(newData, newFileName string) error {
 	collection := database.Client.Database(os.Getenv("MONGO_DB_NAME")).Collection(CollectionName)
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 
 	defer cancel()
 
 	filter := bson.M{
-		"user_id": bson.M{
-			"$eq": source.UserId,
+		"_id": bson.M{
+			"$eq": source.ID,
 		},
 	}
 
 	update := bson.M{
 		"$set": bson.M{
-			"updated_at": updatedAt,
+			"filename": newFileName,
+			"data":     newData,
+		},
+	}
+
+	result, err := collection.UpdateOne(ctx, filter, update)
+	if err != nil {
+		return err
+	}
+
+	if result.ModifiedCount == 0 {
+		log.Println("[ERR] [models/sources/database.go] No matching document found or updated_at already exists")
+	}
+
+	return nil
+}
+
+func (source *Source) UpdateSourceUpdatedAt() error {
+	collection := database.Client.Database(os.Getenv("MONGO_DB_NAME")).Collection(CollectionName)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+
+	defer cancel()
+
+	filter := bson.M{
+		"_id": bson.M{
+			"$eq": source.ID,
+		},
+	}
+
+	update := bson.M{
+		"$set": bson.M{
+			"updated_at": time.Now(),
+		},
+	}
+
+	result, err := collection.UpdateOne(ctx, filter, update)
+	if err != nil {
+		return err
+	}
+
+	if result.ModifiedCount == 0 {
+		log.Println("[ERR] [models/sources/database.go] No matching document found or updated_at already exists")
+	}
+
+	return nil
+}
+
+func (source *Source) UpdateSourceLastRunAt() error {
+	collection := database.Client.Database(os.Getenv("MONGO_DB_NAME")).Collection(CollectionName)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+
+	defer cancel()
+
+	filter := bson.M{
+		"_id": bson.M{
+			"$eq": source.ID,
+		},
+	}
+
+	update := bson.M{
+		"$set": bson.M{
+			"last_run_at": time.Now(),
 		},
 	}
 

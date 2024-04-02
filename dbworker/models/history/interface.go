@@ -7,7 +7,7 @@ import (
 type History struct {
 	ID        string     `json:"id" bson:"_id"`
 	SourceId  string     `json:"source_id" bson:"source_id"`
-	ExitCode  int64      `json:"exit_code" bson:"exit_code"`
+	ExitCode  int        `json:"exit_code" bson:"exit_code"`
 	Stdout    string     `json:"stdout" bson:"stdout"`
 	Stderr    string     `json:"stderr" bson:"stderr"`
 	OOMKilled bool       `json:"oom_killed" bson:"oom_killed"`

@@ -71,10 +71,6 @@ async def run(request: web.Request) -> web.Response:
         "duration": round(duration, 2),
     }
 
-    # TODO: Запись в таблицу истории в MongoDB
-    health_result = await health_check()
-    logging.debug(f'Health check result: {health_result}')
-
     return web.json_response(result)
 
 
