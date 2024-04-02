@@ -58,7 +58,7 @@ func FindUserByName(name string) (User, error) {
 	return user, nil
 }
 
-func FindUserByID(id int64) (User, error) {
+func FindUserByID(id string) (User, error) {
 	collection := database.Client.Database(os.Getenv("MONGO_DB_NAME")).Collection(CollectionName)
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 

@@ -13,3 +13,10 @@ type User struct {
 	PasswordHash string `json:"password_hash" bson:"password_hash"`
 	Role         Role   `json:"role" bson:"role"`
 }
+
+type UserJWT struct {
+	Exp  int    `json:"exp"`
+	Id   string `json:"id"`
+	Name string `json:"name"`
+	Role int    `json:"role"`
+}

@@ -2,12 +2,15 @@ package models
 
 import (
 	"context"
-	"dbworker/database"
+	models "dbworker/models/users"
 	"errors"
 	"log"
 	"os"
 	"time"
 
+	"dbworker/database"
+
+	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -17,20 +20,37 @@ const (
 	CollectionName = "sources"
 )
 
-var ErrSourceNotFound = errors.New("sources not found")
+var ErrSourceNotFound = errors.New("source not found")
 
-func CreateSource(source Source) error {
+func CreateSource(source SourceDTO) error {
 	collection := database.Client.Database(os.Getenv("MONGO_DB_NAME")).Collection(CollectionName)
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 
 	defer cancel()
 
-	_, err := collection.InsertOne(ctx, source)
+	preparedSource := new(Source)
+	currentTimeDate := time.Now()
+
+	preparedSource.CreatedAt = &currentTimeDate
+	preparedSource.UpdatedAt = &currentTimeDate
+	preparedSource.LastRunAt = &currentTimeDate
+
+	id := uuid.New()
+
+	preparedSource.ID = id.String()
+	preparedSource.UserId = source.UserId
+
+	_, err := models.FindUserByID(preparedSource.UserId)
+	if err != nil {
+		return errors.New("пользователя не существует")
+	}
+
+	_, err = collection.InsertOne(ctx, preparedSource)
 
 	return err
 }
 
-func FindSourceByUserID(userId int64) (Source, error) {
+func FindSourceByUserID(userId string) (Source, error) {
 	collection := database.Client.Database(os.Getenv("MONGO_DB_NAME")).Collection(CollectionName)
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 
@@ -50,7 +70,7 @@ func FindSourceByUserID(userId int64) (Source, error) {
 	return source, nil
 }
 
-func GetUserSources(user_id int64, limit int64, offset int64) ([]Source, error) {
+func GetUserSources(userId string, limit int64, offset int64) ([]Source, error) {
 	collection := database.Client.Database(os.Getenv("MONGO_DB_NAME")).Collection(CollectionName)
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 
@@ -62,7 +82,7 @@ func GetUserSources(user_id int64, limit int64, offset int64) ([]Source, error) 
 
 	filter := bson.M{
 		"user_id": bson.M{
-			"$eq": user_id,
+			"$eq": userId,
 		},
 	}
 
@@ -77,6 +97,20 @@ func GetUserSources(user_id int64, limit int64, offset int64) ([]Source, error) 
 	}(cur, ctx)
 
 	if err != nil {
+		return sources, err
+	}
+
+	for cur.Next(ctx) {
+		var source Source
+		err := cur.Decode(&source)
+		if err != nil {
+			return sources, err
+		}
+
+		sources = append(sources, source)
+	}
+
+	if err := cur.Err(); err != nil {
 		return sources, err
 	}
 
