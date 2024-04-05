@@ -27,16 +27,16 @@
   </section>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script lang="ts" setup>
 import axios from 'axios';
-
-export default defineComponent({
-  setup() {
+definePageMeta({
+  layout: 'empty'
+})
     const name = ref('');
     const password = ref('');
     const error = ref('');
     const router = useRouter()
+    const userStore = useUserStore()
 
     const register = async () => {
       try {
@@ -47,7 +47,12 @@ export default defineComponent({
 
         if (response.status === 200) {
           console.log('Регистрация прошла успешно:', response.data);
-          await router.push({path: "/"})
+            await userStore.login({
+              name: name.value,
+              password: password.value
+            })
+
+            await router.push('/')
         } else {
           error.value = 'Регистрация не удалась. Пожалуйста, попробуйте еще раз.';
         }
@@ -59,15 +64,6 @@ export default defineComponent({
         }
       }
     };
-
-    return {
-      name,
-      password,
-      error,
-      register,
-    };
-  },
-});
 </script>
 
 <style scoped>
