@@ -7,7 +7,9 @@
 </template>
 
 <script lang="ts">
-
+definePageMeta({
+  middleware: 'protected'
+})
 </script>
 
 <style>

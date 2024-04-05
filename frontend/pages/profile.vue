@@ -18,6 +18,10 @@
 </template>
 
 <script lang="ts">
+definePageMeta({
+  middleware: 'protected'
+})
+
 import { defineComponent } from 'vue';
 import axios from 'axios';
 
