@@ -1,0 +1,21 @@
+.index{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 500px;
+    min-height: 500px;
+}
+
+.index__button{
+    background-color: #1C91F2;
+    width: 240px;
+    height: 60px;
+    color: #F7FAFC;
+    border: none;
+    border-radius: 10px;
+}
+
+.index__button:hover{
+    opacity: 0.8;
+    cursor: pointer;
+}
