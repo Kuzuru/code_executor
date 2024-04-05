@@ -36,7 +36,7 @@
     color: #0D141C;
 }
 .header__buttons_history:hover{
-    background-color: rgba(0,0,0,0.05);
+    background-color: rgba(0, 0, 0, 0.05);
     cursor: pointer;
 }
 
@@ -50,7 +50,6 @@
 
 .header__buttons_profile:hover{
     cursor: pointer;
-
 }
 
 .header__buttons_profile_img{

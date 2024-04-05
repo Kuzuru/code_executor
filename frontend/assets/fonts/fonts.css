@@ -3,11 +3,13 @@
     font-weight: 500;
     src: url("Manrope-Medium.ttf") format("ttf")
 }
+
 @font-face {
     font-family: "Manrope";
     font-weight: 700;
     src: url("Manrope-Bold.ttf") format("ttf")
 }
+
 @font-face {
     font-family: "Manrope";
     font-weight: 300;
