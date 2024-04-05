@@ -8,12 +8,13 @@
         main.java
       </h2>
     </div>
-    <textarea class="input__code">
-
-    </textarea>
+    <MonacoEditor lang="javascript"  style="height: 400px" >
+    </MonacoEditor>
   </section>
 </template>
 <script setup lang="ts">
+// export const value = ref('')
+
 </script>
 
 <style>

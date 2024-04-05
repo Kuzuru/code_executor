@@ -25,24 +25,8 @@
 
 }
 
-.input__code{
-    resize: none;
-    height: 500px;
-    font-family: "Fira Code Retina", serif;
-    font-size: 20px;
-    border: 1px rgba(0, 0, 0, 0.12) solid;
+.slider {
     border-radius: 10px;
-    outline: none;
-    width: 100%;
+
 }
 
-.input__code::-webkit-scrollbar-thumb{
-    background-color: rgba(0, 0, 0, 0.15);
-    border-radius: 10px;
-    margin: 10px;
-}
-
-.input__code::-webkit-scrollbar{
-    background: none;
-    width: 5px;
-}

@@ -22,10 +22,11 @@
         <p class="info__item_text">https://codexecutor.com/iS45ujX2</p>
       </div>
     </div>
-    <button class="info__button">Запустить</button>
+    <button class="info__button" @click="runCode">Запустить</button>
   </section>
 </template>
 <script setup lang="ts">
+import runCode from '../pages/executor.vue'
 </script>
 
 <style>
