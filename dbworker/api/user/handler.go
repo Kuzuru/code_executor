@@ -108,6 +108,12 @@ func (res *resource) register(c *fiber.Ctx) error {
 		})
 	}
 
+	if len(req.Password) < 6 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Пароль должен быть не менее 6 символов",
+		})
+	}
+
 	hashedPassword, err := utils.GenerateHashFromPassword(req.Password, utils.GetArgonParams())
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{

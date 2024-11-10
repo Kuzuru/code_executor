@@ -33,7 +33,7 @@ var ConfigDefault = Config{
 	Decode:       nil,
 	Unauthorized: nil,
 	Secret:       os.Getenv("JWT_SECRET"),
-	Expiry:       60,
+	Expiry:       3600,
 }
 
 // configDefault is a function for generating default config
